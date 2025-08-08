@@ -1,21 +1,45 @@
 import prisma from '../prisma.js';
 
-//function to get all the vehicules for admin users
-export const getAllVehicles = async (req, res) => {
-  if (req.user.role !== 'ADMIN') return res.status(403).json({ message: 'Forbidden' });
+//function to get all the vehicules or their own for admin users
+export const getVehicles = async (req, res) => {
+  const { id } = req.params;
 
-  const vehicles = await prisma.vehicle.findMany({ include: { position: true, user: true } });
-  res.json(vehicles);
+  // If an ID is provided, fetch that specific vehicle
+  if (id) {
+    const vehicle = await prisma.vehicle.findUnique({
+      where: { id },
+      include: { position: true, user: true }
+    });
+
+    if (!vehicle) {
+      return res.status(404).json({ message: 'Vehicle not found' });
+    }
+
+    // If user is not admin, ensure they own the vehicle
+    if (req.user.role !== 'ADMIN' && vehicle.userId !== req.user.id) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+
+    return res.json(vehicle);
+  }
+
+  // If no ID is provided:
+  if (req.user.role === 'ADMIN') {
+    // Admin can view all vehicles
+    const vehicles = await prisma.vehicle.findMany({
+      include: { position: true, user: true }
+    });
+    return res.json(vehicles);
+  } else {
+    // Regular users can only view their own vehicles
+    const vehicles = await prisma.vehicle.findMany({
+      where: { userId: req.user.id },
+      include: { position: true }
+    });
+    return res.json(vehicles);
+  }
 };
 
-//function to for those users that only can see their own vehicule (non-admin)
-export const getById = async (req, res) => {
-  const vehicles = await prisma.vehicle.findMany({
-    where: { userId: req.user.id },
-    include: { position: true }
-  });
-  res.json(vehicles);
-};
 
 export const createVehicle = async (req, res) => {
   const { license, brand, color, model, lat, lng } = req.body;
