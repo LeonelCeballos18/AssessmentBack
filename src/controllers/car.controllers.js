@@ -1,4 +1,4 @@
-import prisma from '../lib/prisma.js';
+import prisma from '../prisma.js';
 
 //function to get all the vehicules for admin users
 export const getAllVehicles = async (req, res) => {

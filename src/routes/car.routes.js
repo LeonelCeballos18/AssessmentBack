@@ -6,8 +6,8 @@ import {
     updateVehiclePosition,
     deleteOwnVehicle,
     deleteAnyVehicle,
- } from "../controllers/car.controller"
- import { auth } from "../middleware/auth.middleware";
+ } from "../controllers/car.controllers.js"
+ import { auth, isAdmin } from "../middleware/auth.middleware.js";
 
  const router = Router();
 
