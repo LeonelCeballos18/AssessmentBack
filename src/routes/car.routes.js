@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { 
-    getAllVehicles,
-    getById,
+    getVehicles,
     createVehicle,
     updateVehiclePosition,
     deleteOwnVehicle,
@@ -13,9 +12,9 @@ import {
 
 router.use(auth);
 
-router.get('/all', isAdmin, getAllVehicles);
+router.get('/', getVehicles);
 
-router.get('/', getById);
+router.get('/:id', getVehicles);
 
 router.post('/', createVehicle);
 
