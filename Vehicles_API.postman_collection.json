@@ -1,0 +1,251 @@
+{
+	"info": {
+		"_postman_id": "c5be30b9-2736-42ea-9d11-1dce4e619868",
+		"name": "Assessment Backend - Vehicles API",
+		"description": "Collection to test Auth and Vehicle endpoints with Prisma/Postgres backend.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47454447"
+	},
+	"item": [
+		{
+			"name": "Auth - Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Vehicles - Get All (admin only)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNkODhhMGYyLWIwZTYtNDgxMy1iMzEwLTdlYzhjM2M1MjVmYSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc1NDY3MDAzOSwiZXhwIjoxNzU0NjczNjM5fQ.4slV-kUGpm2zYiTJynkfw0mD7x4eCb1PUUwdFSjrVrU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/car/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"car",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Vehicles - Get My Vehicles",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNkODhhMGYyLWIwZTYtNDgxMy1iMzEwLTdlYzhjM2M1MjVmYSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc1NDY3MTA5MywiZXhwIjoxNzU0Njc0NjkzfQ.q8LcVBzwjXcMBK7cvmkbdADuFMxlvTWaN9Jj2XykL-I",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/car/{{id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"car",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Vehicles - Create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"license\": \"USER-002\",\n  \"brand\": \"Nissan\",\n  \"color\": \"White\",\n  \"model\": \"Versa\",\n  \"lat\": 19.43,\n  \"lng\": -99.13\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/car",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"car"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Vehicles - Update Position",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"lat\": 19.5,\n  \"lng\": -99.2\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/car/{{vehicle_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"car",
+						"{{vehicle_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Vehicles - Delete Own",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/car/{{vehicle_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"car",
+						"{{vehicle_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Vehicles - Delete Any (admin only)",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/car/admin/{{vehicle_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"car",
+						"admin",
+						"{{vehicle_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3001"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "vehicle_id",
+			"value": ""
+		}
+	]
+}
