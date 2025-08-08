@@ -1,4 +1,5 @@
 import prisma from '../prisma.js';
+import { getIO } from '../socket.js';
 
 //function to get all the vehicules or their own for admin users
 export const getVehicles = async (req, res) => {
@@ -62,18 +63,22 @@ export const createVehicle = async (req, res) => {
 
 export const updateVehiclePosition = async (req, res) => {
   const { lat, lng } = req.body;
+  const { id } = req.params;
 
-  const vehicle = await prisma.vehicle.findUnique({
-    where: { id: req.params.id },
-    include: { position: true },
-  });
-
+  const vehicle = await prisma.vehicle.findUnique({ where: { id } });
   if (!vehicle) return res.status(404).json({ message: 'Not found' });
 
-  await prisma.position.update({
-    where: { id: vehicle.positionId },
-    data: { lat, lng }
-  });
+  const existing = await prisma.position.findUnique({ where: { vehicleId: id } });
+  if (!existing) {
+    await prisma.position.create({ data: { lat, lng, vehicleId: id } });
+  } else {
+    await prisma.position.update({ where: { vehicleId: id }, data: { lat, lng } });
+  }
+
+  // Emit real-time update
+  const io = getIO();
+  io.emit('position:update', { vehicleId: id, lat, lng });
+  io.to(`vehicle:${id}`).emit('position:update', { vehicleId: id, lat, lng });
 
   res.json({ message: 'Position updated' });
 };
